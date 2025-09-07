@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react'
 import { Button } from "@/components/ui/button"
 import { YearProgress } from "@/components/YearProgress"
 import { Navigation } from "@/components/Navigation"
@@ -6,8 +7,13 @@ import { ArticleList, type Article } from "@/components/ArticleList"
 import { Header } from "@/components/Header"
 import { MainLayout } from "@/components/MainLayout"
 import { PageContainer } from "./components/PageContainer"
+import { CustomPagination } from "@/components/ui/custom-pagination"
+import { getPaginatedData, calculatePagination } from "@/lib/pagination"
 
 function App() {
+  // 当前页码状态
+  const [currentPage, setCurrentPage] = useState(1)
+
   // 示例文章数据
   const articles: Article[] = [
     // 技术类文章 (technology)
@@ -371,6 +377,22 @@ function App() {
     }
   ]
 
+  // 计算分页信息和当前页数据
+  const paginationInfo = useMemo(() => {
+    return calculatePagination(articles.length, currentPage)
+  }, [articles.length, currentPage])
+
+  const currentPageArticles = useMemo(() => {
+    return getPaginatedData(articles, currentPage)
+  }, [articles, currentPage])
+
+  // 处理页码变化
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // 滚动到顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <PageContainer>
       <MainLayout>
@@ -380,11 +402,18 @@ function App() {
           <Navigation />
         </Header>
         <MainContent>
-          <ArticleList articles={articles} />
-        </MainContent>
-        <div className="flex justify-center">
+          {/* 文章列表 */}
+          <ArticleList articles={currentPageArticles} showPaginationInfo={false} />
           
-        </div>
+          {/* 分页组件 */}
+          <div className="mt-8">
+            <CustomPagination
+              currentPage={paginationInfo.currentPage}
+              totalPages={paginationInfo.totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </MainContent>
       </MainLayout>
     </PageContainer>
   )

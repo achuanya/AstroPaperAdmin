@@ -60,14 +60,29 @@ function ArticleItem({ article }: ArticleItemProps) {
 
 interface ArticleListProps {
   articles: Article[]
+  showPaginationInfo?: boolean
 }
 
-export function ArticleList({ articles }: ArticleListProps) {
+export function ArticleList({ articles, showPaginationInfo = false }: ArticleListProps) {
   return (
     <div className="space-y-5">
-      {articles.map((article) => (
-        <ArticleItem key={article.slug} article={article} />
-      ))}
+      {/* 分页信息显示（可选） */}
+      {showPaginationInfo && articles.length > 0 && (
+        <div className="text-sm text-gray-600 mb-4">
+          显示 {articles.length} 篇文章
+        </div>
+      )}
+      
+      {/* 文章列表 */}
+      {articles.length > 0 ? (
+        articles.map((article) => (
+          <ArticleItem key={article.slug} article={article} />
+        ))
+      ) : (
+        <div className="text-center text-gray-500 py-8">
+          暂无文章
+        </div>
+      )}
     </div>
   )
 }
