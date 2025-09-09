@@ -244,16 +244,55 @@ function buildEditorHTML(post) {
     .me-content { width:100%; flex:1 1 auto; min-height:0; border:0; outline:none; padding:0; resize:none; font-size:16px; line-height:1.75; color:#0f172a; overflow:hidden; position:relative; }
     .me-content .CodeMirror { border:0; height:auto; min-height:300px; font-size:16px; line-height:1.75; }
     .me-content .CodeMirror-scroll { min-height:300px; }
-    .me-content .editor-toolbar { border:0; border-bottom:1px solid #eef2f7; background:#f8fafc; }
+    /* SimpleMDE 工具栏置顶样式 */
+    .me-content .editor-toolbar { 
+      border:0; 
+      border-bottom:1px solid #eef2f7; 
+      background:#f8fafc; 
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+    }
     .me-content .editor-toolbar a { color:#64748b !important; }
     .me-content .editor-toolbar a:hover { background:#e2e8f0 !important; color:#0f172a !important; }
-    .me-content .editor-toolbar.fullscreen { z-index:9999; }
-    .me-content .CodeMirror.CodeMirror-fullscreen { z-index:9999; }
+    
+    /* Fullscreen 模式下的工具栏样式修复 */
+    .me-content .editor-toolbar.fullscreen { 
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 9999 !important;
+      width: 100% !important;
+    }
+    
+    /* Side-by-Side 模式下的工具栏样式修复 */
+    .editor-side-by-side .editor-toolbar {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1001 !important;
+    }
+    
+    /* CodeMirror Fullscreen 模式样式 */
+    .me-content .CodeMirror.CodeMirror-fullscreen { 
+      z-index: 9998 !important;
+      padding-top: 50px !important; /* 为置顶工具栏留出空间 */
+    }
+    
+    /* Side-by-Side 模式下的 CodeMirror 样式修复 */
+    .editor-side-by-side .CodeMirror {
+      padding-top: 0 !important;
+    }
+    
+    /* 修复 Side-by-Side 模式下的预览区域 */
+    .editor-side-by-side .editor-preview-side {
+      top: 50px !important; /* 为置顶工具栏留出空间 */
+    }
 
     /* 元信息面板（默认作为弹层定义） */
     .me-meta-panel { position:fixed; inset:0; background:rgba(0,0,0,.25); display:none; align-items:flex-end; z-index:50; opacity:0; transition:opacity .2s ease; }
     .me-meta-panel.open { display:flex; opacity:1; }
-    .me-meta-sheet { width:100%; background:#fff; border-radius:16px 16px 0 0; padding:14px; max-height:80vh; overflow:auto; }
+    .me-meta-sheet { width:100%; background:#fff; border-radius:16px 16px 0 0; padding:14px; max-height:80vh; overflow:auto; -webkit-overflow-scrolling:touch; }
     .me-meta-row { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:10px; }
     .me-meta-row label { display:block; font-weight:600; margin-bottom:6px; color:#0f172a; }
     .me-meta-row input, .me-meta-row select, .me-meta-row textarea { width:100%; border:1px solid #e2e8f0; border-radius:8px; padding:8px; font-size:14px; }
@@ -272,7 +311,7 @@ function buildEditorHTML(post) {
     #me-root.meta-view .me-meta-sheet { border-radius:12px; max-height:none; height:auto; min-height:60vh; }
 
     /* 新增：在配置界面将操作区贴紧底部，设定高度与背景色 */
-    #me-root.meta-view .me-meta-sheet { display:flex; flex-direction:column; overflow:auto; }
+    #me-root.meta-view .me-meta-sheet { display:flex; flex-direction:column; overflow:auto; -webkit-overflow-scrolling:touch; }
     #me-root.meta-view .me-meta-actions { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 12px; background-color: #f2f6f5; border-top: 1px solid #eef2f7; z-index: 60; }
 
     /* ===== 仿微信风格：封面 / 列表单元 / 开关 ===== */
